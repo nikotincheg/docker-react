@@ -1,10 +1,22 @@
 sudo: required
 services:
-    - docker
+  - docker
     
 before_install:
-    - docker build -t onikitich/docker-react -f Dockerfile.dev .
+  - docker build -t onikitich/docker-react -f Dockerfile.dev .
 
 script:
-    - docker run onikitich/docker-react npm run test -- --coverage
-    
+  - docker run onikitich/docker-react npm run test -- --coverage
+
+deploy:
+  provider: elasticbeanstalk
+  region: "eu-central-1"
+  app: "docker-react"
+  env: "DockerReact-env"
+  bucket_name: "elasticbeanstalk-eu-central-1-587232748808"
+  bucket_path: "docker-react"
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
